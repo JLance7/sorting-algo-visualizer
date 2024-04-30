@@ -9,3 +9,5 @@ Current support for algos:
 chmod +x run.sh
 ./run.sh
 ```
+
+[Preview](assests/thumbnail.png)
