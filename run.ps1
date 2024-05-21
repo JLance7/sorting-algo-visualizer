@@ -1,6 +1,8 @@
 # PowerShell
 
 $VENV_PATH = ".venv"
+$TEST = $args[0]
+
 
 if (-not (Test-Path -Path $VENV_PATH -PathType Container)) {
     python -m venv .venv
@@ -11,6 +13,12 @@ if (-not (Test-Path -Path $VENV_PATH -PathType Container)) {
     .\.venv\Scripts\Activate.ps1
 }
 
-pytest
+mypy src/
+if ($null -ne $TEST) {
+    pytest
+}
 echo 'running...'
 python main.py
+
+# python versoin 3.8.2
+# pip version 24.0

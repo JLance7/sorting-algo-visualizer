@@ -1,8 +1,7 @@
 from src.algos import *
 import pygame, sys
-from tkinter import *
 from src.ui.colors import *
-from src.ui.gui import Text, Button, RadioButton
+from src.ui.gui import Text, Button, RadioButton, Option
 
 
 UNSORTED = [8, 2, 5, 9, 1, 4, 3, 5, 2]
@@ -29,7 +28,7 @@ def main():
   title = Text('Sorting Algo Visualizer', BLACK, 38)
   run_text = Text('Run', BLACK, 28)
   run_button = Button(1140, 60, run_text)
-  radio = RadioButton(['1', '2', '3'], x=100, y=100)
+  radio = RadioButton([Option(label='1')], initial_x=100, initial_y=100)
 
   while run:
     clock.tick(FPS)

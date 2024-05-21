@@ -1,6 +1,7 @@
 #!/bin/bash
 
 VENV_PATH=".venv"
+TEST=${1}
 
 if [ ! -d $VENV_PATH ];
 then
@@ -12,5 +13,10 @@ else
   . .venv/bin/activate
 fi
 
+mypy src/
+if [ -n "$TEST" ]
+then
+  pytest
+fi
 pytest
 python3 main.py

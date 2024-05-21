@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 import pygame
 from src.ui.colors import *
-from typing import List
+from typing import List, Dict
+
 
 class Text():
   def __init__(self, text='', color=BLACK, font_size=20, font='Comic Sans'):
@@ -39,10 +41,19 @@ class Button():
       self.text_obj.render(WIN, self.button.x + text_x_padding, self.button.y + text_y_padding)
 
 
-class RadioButton(Button):
-  def __init__(self, options: List[str], x, y, text_obj=None, width=100, height=60, color=GREEN, hover_color=BLUE):
+@dataclass
+class Option:
+  label: str
+
+class RadioButton():
+  selected = 0
+  buttons = List[Button]
+
+  def __init__(self, options: List[Option], initial_x, initial_y):
     self.options = options
-    super().__init__(x, y, text_obj, width, height, color, hover_color)
+    for x in options:
+      self.buttons.append(Button(initial_x, initial_y, x.label))
+      initial_y += 20
 
   def draw_radio_button(self, mouse_x, mouse_y):
     if self.check_mouse_collides(mouse_x, mouse_y):
