@@ -1,6 +1,7 @@
 from typing import List
 from src.algos.util.helper import swap
 
+
 def insertion_sort(arr: List[int]):
   """O(n^2)"""
   n = len(arr)
@@ -17,3 +18,4 @@ def insertion_sort(arr: List[int]):
       prev = arr[j]
       i -= 1
       current = arr[i]
+
