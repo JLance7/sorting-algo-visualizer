@@ -2,7 +2,7 @@
 Current support for algos:
 * bubble sort
 * insertion sort
-* selection sort
+
 
 ## Running
 ```bash
@@ -14,4 +14,4 @@ or
 .\run.ps1
 ```
 
-[Preview](assets/thumbnail-algo.png)
+![Preview](assets/thumbnail-algo.png)
