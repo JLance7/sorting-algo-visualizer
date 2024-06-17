@@ -2,7 +2,7 @@ from src.algos.util.helper import swap
 from typing import List
 
 
-def selection_sort(arr: List[int]):
+def selection_sort(arr: List[int], generate = False):
   """O(n^2)"""
   n = len(arr)
   for i in range(n):
@@ -13,3 +13,5 @@ def selection_sort(arr: List[int]):
         min_index = j
         min_value = arr[min_index]
     swap(arr, i, min_index)
+    if generate:
+      yield True

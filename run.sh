@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e -o pipefail
+
 VENV_PATH=".venv"
 TEST=${1}
 

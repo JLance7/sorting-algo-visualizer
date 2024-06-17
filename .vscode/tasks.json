@@ -9,9 +9,14 @@
       "command": ".\\run.ps1"
     },
     {
-      "label": "test",
+      "label": "test windows",
       "type": "shell",
       "command": ".\\run.ps1 test"
+    },
+    {
+      "label": "test unix",
+      "type": "shell",
+      "command": "./run.sh test"
     },
     // {
     //   "label": "debug",

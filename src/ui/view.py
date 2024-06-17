@@ -5,13 +5,43 @@ from src.ui.gui import Text, Button, RadioButtons, OptionType
 from typing import List
 import random
 
-unsorted_random = [random.randint(1, 100) for i in range(138)]
-print(unsorted_random)
+def randomize_list() -> List[int]:
+  return [random.randint(1, 100) for i in range(138)]
+
+unsorted_random = randomize_list()
 unsorted = unsorted_random
-SORTED =   [1, 2, 2, 3, 4, 5, 5, 8, 9]
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
+WIN = pygame.display.set_mode((WIDTH, HEIGHT)) 
+sorting = False
+
+
+class ButtonGroup:
+  def __init__(self, run_button: Button, radio_buttons: RadioButtons, clear_button: Button, direction_buttons: RadioButtons):
+    self.run_button = run_button
+    self.radio_buttons = radio_buttons
+    self.clear_button = clear_button
+    self.direction_buttons = direction_buttons
+
+
+class TextGroup:
+  def __init__(self, title):
+    self.title = title
+
+
+class DrawGroup:
+  def __init__(self, WIN, BACKGROUND, VISUAL_BOX, text_group: TextGroup, button_group: ButtonGroup):
+    self.WIN = WIN
+    self.BACKGROUND = BACKGROUND
+    self.VISUAL_BOX = VISUAL_BOX
+
+    self.title = text_group.title
+
+    self.run_button = button_group.run_button
+    self.radio_buttons = button_group.radio_buttons
+    self.clear_button = button_group.clear_button
+    self.direction_buttons = button_group.direction_buttons
 
 
 def main():
@@ -23,64 +53,87 @@ def main():
   clock = pygame.time.Clock()
   run = True
   visual_rects = initialize_visual_rects()
-
-  WIN = pygame.display.set_mode((WIDTH, HEIGHT)) 
+  
   BACKGROUND = pygame.Rect(0, 0, WIDTH, HEIGHT)
   VISUAL_BOX = pygame.Rect(0, 200, WIDTH, HEIGHT - 200) 
 
   title = Text('Sorting Algo Visualizer', BLACK, 38)
-  run_text = Text('Run', BLACK, 28)
-  run_button = Button(1140, 60, run_text)
+  run_text = Text('Run', BLACK, 50)
+  run_button = Button(1140, 40, run_text)
+
+  clear_text = Text('Clear', BLACK, 50)
+  clear_button = Button(20, 40, clear_text, 100, 60, YELLOW)
   radio_buttons = RadioButtons([OptionType(label='Bubble sort'), 
                                 OptionType(label='Insertion sort'),
                                 OptionType(label='Selection sort')
-                                ], initial_x=1000, initial_y=50)
+                                ], initial_x=950, initial_y=40)
+  direction_buttons = RadioButtons([OptionType(label='ASC'),
+                                    OptionType(label='DESC')],
+                                    initial_x=800, initial_y=40)
 
+  button_group = ButtonGroup(run_button, radio_buttons, clear_button, direction_buttons)
+  text_group = TextGroup(title)
+  draw_group = DrawGroup(WIN, BACKGROUND, VISUAL_BOX, text_group, button_group)
   while run:
     clock.tick(FPS)
-    visual_rects = check_events(visual_rects, run_button, radio_buttons)
-    draw(WIN, BACKGROUND, VISUAL_BOX, title, run_button, radio_buttons, visual_rects)
+    visual_rects = check_events(draw_group, visual_rects)
+    draw(draw_group, visual_rects)
 
 
-def draw(WIN, BACKGROUND, VISUAL_BOX, title, run_button, radio, visual_rects):
+def draw(draw_group: DrawGroup, visual_rects: List[pygame.Rect]):
   x, y = pygame.mouse.get_pos()
 
-  pygame.draw.rect(WIN, GRAY, BACKGROUND)
-  pygame.draw.rect(WIN, GRAY, VISUAL_BOX)
+  pygame.draw.rect(draw_group.WIN, GRAY, draw_group.BACKGROUND)
+  pygame.draw.rect(draw_group.WIN, GRAY, draw_group.VISUAL_BOX)
   
-  title.render(WIN, WIDTH//2 - title.text_surface.get_width()//2, 10)
-  run_button.draw_button(WIN=WIN, mouse_x=x, mouse_y=y, text_x_padding=20, text_y_padding=7)
-  radio.draw_radio_buttons(WIN=WIN, mouse_x=x, mouse_y=y)
+  draw_group.title.render(WIN, WIDTH//2 - draw_group.title.text_surface.get_width()//2, 10)
+  draw_group.run_button.draw_button(WIN=WIN, mouse_x=x, mouse_y=y, text_x_padding=15, text_y_padding=10)
+  draw_group.radio_buttons.draw_radio_buttons(WIN=WIN, mouse_x=x, mouse_y=y)
 
-  for rect in visual_rects:
-    pygame.draw.rect(WIN, RED, rect)
+  draw_group.clear_button.draw_button(WIN=WIN, mouse_x=x, mouse_y=y, text_x_padding = 4, text_y_padding=10)
+  draw_group.direction_buttons.draw_radio_buttons(WIN=WIN, mouse_x=x, mouse_y=y)
+  print(f'algo radio selected: {draw_group.radio_buttons.selected}')
+
+  draw_rects(visual_rects)
   pygame.display.update()
 
 
-def check_events(visual_rects, run_button, radio_buttons):
+def check_events(draw_group, visual_rects):
+  global unsorted
+
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       pygame.quit()
       sys.exit() 
 
     # key pressed
-    if event.type == pygame.KEYDOWN:      
-      if event.key == pygame.K_UP:
-        print('up')
-      elif event.key == pygame.K_DOWN:
-        print('down')
-      elif event.key == pygame.K_RIGHT:
-        print('right')
-      elif event.key == pygame.K_LEFT:
-        print('left')   
+    if event.type == pygame.KEYDOWN:    
+      pass  
+      # if event.key == pygame.K_UP:
+      #   print('up')
+      # elif event.key == pygame.K_DOWN:
+      #   print('down')
+      # elif event.key == pygame.K_RIGHT:
+      #   print('right')
+      # elif event.key == pygame.K_LEFT:
+      #   print('left')   
 
     if event.type == pygame.MOUSEBUTTONDOWN:
-      if run_button.button.collidepoint(event.pos):
-        visual_rects = run_the_visualization(visual_rects, radio_buttons.selected)
+      if draw_group.run_button.button.collidepoint(event.pos):
+        visual_rects = run_the_visualization(visual_rects, draw_group.radio_buttons.selected, draw_group)
+
+      if draw_group.clear_button.button.collidepoint(event.pos):
+        print('clear!')
+        unsorted = randomize_list()
+        visual_rects = initialize_visual_rects()
       
-      for i, button in enumerate(radio_buttons.buttons):
+      for i, button in enumerate(draw_group.radio_buttons.buttons):
         if button.button.collidepoint(event.pos):
-          radio_buttons.selected = i
+          draw_group.radio_buttons.selected = i
+
+      for i, button in enumerate(draw_group.direction_buttons.buttons):
+        if button.button.collidepoint(event.pos):
+          draw_group.direction_buttons.selected = i
   return visual_rects
 
 
@@ -97,23 +150,44 @@ def initialize_visual_rects() -> List[pygame.Rect]:
   return visual_rects
 
 
-def run_the_visualization(visual_rects, selected_index) -> List[pygame.Rect]:
-  if selected_index == 0:
-    algo = 'bubble'
+def run_the_visualization(visual_rects, selected_index, draw_group) -> List[pygame.Rect]:
+  global sorting
+
+  if selected_index in [0, 1, 2]:
+    sorting = True
+
+    if selected_index == 0:
+      algo = bubble_sort
+      
+    elif selected_index == 1:
+      algo = insertion_sort
+     
+    elif selected_index == 2:
+      algo = selection_sort
+
     print(f'running visualization with algo: {algo}')
-    bubble_sort(unsorted)
-    visual_rects = initialize_visual_rects()
-  elif selected_index == 1:
-    algo = 'insertion'
-    print(f'running visualization with algo: {algo}')
-    insertion_sort(unsorted)
-    visual_rects = initialize_visual_rects()
-  else:
-    algo = 'selection'
-    print(f'running visualization with algo: {algo}')
-    selection_sort(unsorted)
-    visual_rects = initialize_visual_rects()
+    if draw_group.direction_buttons.selected == 0:
+      print('ASC')
+    else:
+      print('DESC')
+
+    while sorting:
+      try:
+        print(f'sorting {pygame.time.get_ticks()}')
+        next(bubble_sort(unsorted, generate=True))
+      except:
+        sorting = False
+      visual_rects = initialize_visual_rects()
+      draw(draw_group, visual_rects)
+      # print(unsorted)
+      # pygame.time.delay(500)
+      check_events(draw_group, visual_rects)
   return visual_rects
+
+
+def draw_rects(visual_rects):
+  for rect in visual_rects:
+    pygame.draw.rect(WIN, RED, rect)
 
 
 if __name__ == "__main__":
