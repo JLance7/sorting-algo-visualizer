@@ -14,4 +14,4 @@ or
 .\run.ps1
 ```
 
-[Preview](assests/thumbnail-algo.png)
+[Preview](assets/thumbnail-algo.png)
