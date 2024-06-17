@@ -20,5 +20,4 @@ if [ -n "$TEST" ]
 then
   pytest
 fi
-pytest
 python3 main.py
