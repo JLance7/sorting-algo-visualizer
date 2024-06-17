@@ -65,7 +65,7 @@ def main():
   clear_button = Button(20, 40, clear_text, 100, 60, YELLOW)
   radio_buttons = RadioButtons([OptionType(label='Bubble sort'), 
                                 OptionType(label='Insertion sort'),
-                                OptionType(label='Selection sort')
+                                # OptionType(label='Selection sort')
                                 ], initial_x=950, initial_y=40)
   direction_buttons = RadioButtons([OptionType(label='ASC'),
                                     OptionType(label='DESC')],
@@ -80,7 +80,7 @@ def main():
     draw(draw_group, visual_rects)
 
 
-def draw(draw_group: DrawGroup, visual_rects: List[pygame.Rect]):
+def draw(draw_group: DrawGroup, visual_rects: List[pygame.Rect], visual_rects_j=None, visual_rects_j_1=None):
   x, y = pygame.mouse.get_pos()
 
   pygame.draw.rect(draw_group.WIN, GRAY, draw_group.BACKGROUND)
@@ -92,9 +92,8 @@ def draw(draw_group: DrawGroup, visual_rects: List[pygame.Rect]):
 
   draw_group.clear_button.draw_button(WIN=WIN, mouse_x=x, mouse_y=y, text_x_padding = 4, text_y_padding=10)
   draw_group.direction_buttons.draw_radio_buttons(WIN=WIN, mouse_x=x, mouse_y=y)
-  print(f'algo radio selected: {draw_group.radio_buttons.selected}')
 
-  draw_rects(visual_rects)
+  draw_rects(visual_rects, visual_rects_j, visual_rects_j_1)
   pygame.display.update()
 
 
@@ -123,7 +122,6 @@ def check_events(draw_group, visual_rects):
         visual_rects = run_the_visualization(visual_rects, draw_group.radio_buttons.selected, draw_group)
 
       if draw_group.clear_button.button.collidepoint(event.pos):
-        print('clear!')
         unsorted = randomize_list()
         visual_rects = initialize_visual_rects()
       
@@ -166,29 +164,34 @@ def run_the_visualization(visual_rects, selected_index, draw_group) -> List[pyga
       algo = selection_sort
 
     print(f'running visualization with algo: {algo}')
+    direction = 'ASC'
     if draw_group.direction_buttons.selected == 0:
-      print('ASC')
+      direction = 'ASC'
     else:
-      print('DESC')
+      direction = 'DESC'
 
+    # j = 0
+    # j_1 = 0
     while sorting:
       try:
-        print(f'sorting {pygame.time.get_ticks()}')
-        next(bubble_sort(unsorted, generate=True))
+        # print(f'sorting {pygame.time.get_ticks()}')
+        j, j_1 = next(algo(unsorted, direction, generate=True))
+        print(j, j_1)
       except:
         sorting = False
       visual_rects = initialize_visual_rects()
-      draw(draw_group, visual_rects)
+      draw(draw_group, visual_rects, visual_rects_j=j, visual_rects_j_1=j_1)
       # print(unsorted)
-      # pygame.time.delay(500)
+      # pygame.time.delay(250)
       check_events(draw_group, visual_rects)
   return visual_rects
 
 
-def draw_rects(visual_rects):
-  for rect in visual_rects:
-    pygame.draw.rect(WIN, RED, rect)
+def draw_rects(visual_rects, visual_rects_j=None, visual_rects_j_1=None):
+  for i, rect in enumerate(visual_rects):
+    if i == visual_rects_j_1:
+      pygame.draw.rect(WIN, GREEN, rect)
+    else:
+      pygame.draw.rect(WIN, RED, rect)
 
 
-if __name__ == "__main__":
-  run_the_visualization(None, 0)

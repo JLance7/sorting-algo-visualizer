@@ -11,20 +11,20 @@ def test_swap():
 
 
 def test_bubbles():
-  new_unsorted = UNSORTED
-  bubble_sort(new_unsorted)
+  new_unsorted = UNSORTED[:]
+  bubble_sort(new_unsorted, generate=False)
   assert new_unsorted == SORTED 
 
 
 def test_insertion():
-  new_unsorted = UNSORTED
-  bubble_sort(new_unsorted)
+  new_unsorted = UNSORTED[:]
+  insertion_sort(new_unsorted, generate=False)
   assert new_unsorted == SORTED 
 
 
 def test_selection():
-  new_sorted = UNSORTED
-  selection_sort(new_sorted)
+  new_sorted = UNSORTED[:]
+  selection_sort(new_sorted, generate=False)
   assert new_sorted == SORTED
 
 

@@ -48,11 +48,11 @@ class Button():
 
 
 class RadioButtons():
-  selected = 0
-  buttons: List[Button] = []
-
   def __init__(self, options: List[OptionType], initial_x, initial_y):
     self.options = options
+    self.selected = 0
+    self.buttons: List[Button] = []
+
     for x in options:
       text = Text(x.label, BLACK, 28)
       my_button = Button(initial_x, initial_y, text, 50, 30, None, None, transparent=True)
